@@ -1,18 +1,18 @@
 function varargout = pointmatch(tile1,tile2,acqusitionfolder1,acqusitionfolder2,outfold,pixshift,ch,maxnumofdesc,exitcode)
 %%
-compiledfunc = '/groups/mousebrainmicro/home/base/CODE/MATLAB/compiledfunctions/pointmatch/pointmatch';
-if ~exist(fileparts(compiledfunc),'dir')
-    mkdir(fileparts(compiledfunc));
-    mfilename_ = mfilename('fullpath');
-    % unix(sprintf('mcc -m -v -R -singleCompThread %s -d %s -a %s',mfilename_,fileparts(compiledfunc),fullfile(fileparts(mfilename_),'functions')))
-    unix(sprintf('mcc -m -v %s -d %s -a %s',mfilename_,fileparts(compiledfunc),fullfile(fileparts(mfilename_),'functions')))
-    unix(sprintf('chmod g+x %s',compiledfunc))
-    %,fullfile(fileparts(mfilename_),'common')
-end
-
-if ~isdeployed
-    addpath(genpath('./functions'))
-end
+% compiledfunc = '/groups/mousebrainmicro/home/base/CODE/MATLAB/compiledfunctions/pointmatch/pointmatch';
+% if ~exist(fileparts(compiledfunc),'dir')
+%     mkdir(fileparts(compiledfunc));
+%     mfilename_ = mfilename('fullpath');
+%     % unix(sprintf('mcc -m -v -R -singleCompThread %s -d %s -a %s',mfilename_,fileparts(compiledfunc),fullfile(fileparts(mfilename_),'functions')))
+%     unix(sprintf('mcc -m -v %s -d %s -a %s',mfilename_,fileparts(compiledfunc),fullfile(fileparts(mfilename_),'functions')))
+%     unix(sprintf('chmod g+x %s',compiledfunc))
+%     %,fullfile(fileparts(mfilename_),'common')
+% end
+% 
+% if ~isdeployed
+%     addpath(genpath('./functions'))
+% end
 
 if nargin<1
     rawfolder = '/groups/mousebrainmicro/mousebrainmicro/data/'
