@@ -19,9 +19,11 @@ function install_to_patrick_pipeline(a_or_b)
 
     % Get the git hash
     commit_hash = get_git_hash_and_error_if_uncommited_changes(this_folder_path) ;
+    short_commit_hash = commit_hash(1:7) ;
 
     % If the destination folder exists, error out
-    install_folder_path = sprintf('/groups/mousebrainmicro/mousebrainmicro/pipeline-systems/pipeline-%s/apps/pipeline-featmatch-%s', a_or_b, commit_hash) ;
+    install_folder_path = ...
+      sprintf('/groups/mousebrainmicro/mousebrainmicro/pipeline-systems/pipeline-%s/apps/pipeline-featmatch-%s', a_or_b, short_commit_hash) ;
     if exist(install_folder_path, 'file') ,
         error('Install folder %s already exists, please move or delete before installing new one') ;
     end
