@@ -19,22 +19,13 @@ function build_and_install_to_patrick_pipeline(a_or_b)
     if ~exist(compiled_binary_path, 'file') ,
         error('The compiled binary does not exist at %s', compiled_binary_path) ;
     end
-
-    % Make sure the git remote is up-to-date
-    system_with_error_handling('git remote update') ;    
     
     % Get the git hash
     commit_hash = get_git_hash_and_error_if_uncommited_changes(source_repo_folder_path) ;
     short_commit_hash = commit_hash(1:7) ;
 
-    % Get the git remote report
-    git_remote_report = system_with_error_handling('git remote -v') ;    
-    
-    % Get the git status
-    git_status = system_with_error_handling('git status') ;    
-    
-    % Get the recent git log
-    git_log = system_with_error_handling('git log --graph --oneline --max-count 10') ;
+    % Get the git report
+    breadcrumb_string = get_git_report_and_error_if_uncommited_changes(source_repo_folder_path) ;   
     
     % If the destination folder exists, error out
     install_folder_path = ...
@@ -46,13 +37,7 @@ function build_and_install_to_patrick_pipeline(a_or_b)
     % Create the install folder, and any needed parent folders
     ensure_folder_exists(install_folder_path) ;
     
-    % Write a file with the commit hash into the folder, for good measure
-    breadcrumb_string = sprintf('Source repo:\n%s\n\nCommit hash:\n%s\n\nRemote info:\n%s\n\nGit status:\n%s\n\nGit log:\n%s\n\n', ...
-                                source_repo_folder_path, ...
-                                commit_hash, ...
-                                git_remote_report, ...
-                                git_status, ...
-                                git_log) ;
+    % Write a file with the git report into the folder, for good measure
     breadcrumb_file_path = fullfile(install_folder_path, 'breadcrumbs.txt') ;
     write_string_to_text_file(breadcrumb_file_path, breadcrumb_string) ;    
     
