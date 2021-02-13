@@ -22,7 +22,7 @@ function breadcrumb_string = get_git_report_and_error_if_uncommited_changes(repo
     git_status = system_with_error_handling('git status') ;    
     
     % Get the recent git log
-    git_log = system_with_error_handling('git log --graph --oneline --max-count 10') ;
+    git_log = system_with_error_handling('git log --graph --oneline --max-count 10 | cat') ;
     
     % If the destination folder exists, error out
     install_folder_path = ...
