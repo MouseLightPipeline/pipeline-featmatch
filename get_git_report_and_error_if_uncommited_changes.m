@@ -1,7 +1,7 @@
-function breadcrumb_string = get_git_report_and_error_if_uncommited_changes(repo_path)
+function breadcrumb_string = get_git_report_and_error_if_uncommited_changes(source_repo_folder_path)
     original_pwd = pwd() ;
     cleaner = onCleanup(@()(cd(original_pwd))) ;
-    cd(repo_path) ;
+    cd(source_repo_folder_path) ;
     
     % Make sure the git remote is up-to-date
     system_with_error_handling('git remote update') ;    
