@@ -1,5 +1,5 @@
 function breadcrumb_string = get_git_report_and_error_if_uncommited_changes(repo_path)
-    original_pwd =pwd() ;
+    original_pwd = pwd() ;
     cleaner = onCleanup(@()(cd(original_pwd))) ;
     cd(repo_path) ;
     
