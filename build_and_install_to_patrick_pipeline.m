@@ -25,7 +25,7 @@ function build_and_install_to_patrick_pipeline(a_or_b)
     short_commit_hash = commit_hash(1:7) ;
 
     % Get the git report
-    breadcrumb_string = get_git_report_and_error_if_uncommited_changes(source_repo_folder_path) ;   
+    breadcrumb_string = get_git_report(source_repo_folder_path) ;   
     
     % If the destination folder exists, error out
     install_folder_path = ...
