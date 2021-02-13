@@ -30,7 +30,7 @@ function install_to_patrick_pipeline(a_or_b)
     ensure_folder_exists(install_folder_path) ;
     
     % Copy the compiled code to the install folder
-    system_with_error_handling('cp -R %s/* %s', compiled_code_folder_path, install_folder_path) ;
+    system_with_error_handling(sprintf('cp -R %s/* %s', compiled_code_folder_path, install_folder_path)) ;
     
     % Write a file with the commit hash into the folder, for good measure
     commit_hash_file_path = fullfile(install_folder_path, 'commit-hash.txt') ;
