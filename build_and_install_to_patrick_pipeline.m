@@ -12,6 +12,9 @@ function build_and_install_to_patrick_pipeline(a_or_b)
     compiled_code_folder_path = fullfile(source_repo_folder_path, 'compiled') ;
     compiled_binary_path = fullfile(compiled_code_folder_path, 'pointmatch') ;
     
+    % Build
+    build() ;
+    
     % Check that the compiled binary exists
     if ~exist(compiled_binary_path, 'file') ,
         error('The compiled binary does not exist at %s', compiled_binary_path) ;
