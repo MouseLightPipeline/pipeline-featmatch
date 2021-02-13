@@ -5,6 +5,8 @@ function build()
     %compiled_function_binary_path = '/groups/mousebrainmicro/home/base/CODE/MATLAB/compiledfunctions/pointmatch/pointmatch';
     compiled_code_folder_path = fullfile(this_folder_path, 'compiled') ;
     compiled_binary_path = fullfile(compiled_code_folder_path, 'pointmatch') ;
+
+    % Delete the existing compiled code folder
     if exist(compiled_code_folder_path, 'file') ,
         return_code = system(sprintf('rm -rf %s', compiled_code_folder_path)) ;
         if return_code ~= 0 ,
@@ -12,6 +14,7 @@ function build()
         end
     end
     
+    % Build
     mkdir(compiled_code_folder_path);
     % unix(sprintf('mcc -m -v -R -singleCompThread %s -d %s -a %s',mfilename_,compiled_function_folder_path,fullfile(fileparts(mfilename_),'functions')))
     %command_line = sprintf('mcc -m -v %s -d %s -a %s',pointmatch_script_path,compiled_function_folder_path,functions_folder_path) ;
