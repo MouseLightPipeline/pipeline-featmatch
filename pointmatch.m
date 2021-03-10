@@ -1,5 +1,5 @@
 function varargout = pointmatch(tile1,tile2,acqusitionfolder1,acqusitionfolder2,outfold,pixshift,ch,maxnumofdesc,exitcode)
-%%
+
 % compiledfunc = '/groups/mousebrainmicro/home/base/CODE/MATLAB/compiledfunctions/pointmatch/pointmatch';
 % if ~exist(fileparts(compiledfunc),'dir')
 %     mkdir(fileparts(compiledfunc));
@@ -14,25 +14,25 @@ function varargout = pointmatch(tile1,tile2,acqusitionfolder1,acqusitionfolder2,
 %     addpath(genpath('./functions'))
 % end
 
-if nargin<1
-    rawfolder = '/groups/mousebrainmicro/mousebrainmicro/data/'
-    classifierfolder = '/nrs/mouselight/pipeline_output/'
-    sample = '2018-08-15-skeltest'
-    tileid1 = '/2018-08-18/00/00152'
-    tileid2 = '/2018-08-18/00/00442'
-    tile1 = fullfile(classifierfolder,sample,'/stage_2_descriptor_output',tileid1);
-    tile2 = fullfile(classifierfolder,sample,'/stage_2_descriptor_output',tileid2);
-    acqusitionfolder1 = fullfile(rawfolder,sample,'Tiling',tileid1);
-    acqusitionfolder2 = fullfile(rawfolder,sample,'Tiling',tileid2);
-end
+% if nargin<1
+%     rawfolder = '/groups/mousebrainmicro/mousebrainmicro/data/' ;
+%     classifierfolder = '/nrs/mouselight/pipeline_output/' ;
+%     sample = '2018-08-15-skeltest' ;
+%     tileid1 = '/2018-08-18/00/00152' ;
+%     tileid2 = '/2018-08-18/00/00442' ;
+%     tile1 = fullfile(classifierfolder,sample,'/stage_2_descriptor_output',tileid1);
+%     tile2 = fullfile(classifierfolder,sample,'/stage_2_descriptor_output',tileid2);
+%     acqusitionfolder1 = fullfile(rawfolder,sample,'Tiling',tileid1);
+%     acqusitionfolder2 = fullfile(rawfolder,sample,'Tiling',tileid2);
+% end
 
-if nargin<5
-    outfold = tile1;
-    pixshift = '[0 0 0]';
-    ch='1';
-    maxnumofdesc=1e3;
-    exitcode = 0;
-elseif nargin < 6
+% if nargin<5
+%     outfold = tile1;
+%     pixshift = '[0 0 0]';
+%     ch='1';
+%     maxnumofdesc=1e3;
+%     exitcode = 0;
+if nargin < 6
     pixshift = '[0 0 0]';
     ch='1';
     maxnumofdesc=1e3;
@@ -85,7 +85,7 @@ end
 desc1 = readDesc(tile1,ch_desc);
 desc2 = readDesc(tile2,ch_desc);
 % check if input exists
-if isempty(desc1) | isempty(desc2)
+if isempty(desc1) || isempty(desc2) ,
     rate_ = 0;
     X_ = [];
     Y_ = [];
@@ -97,7 +97,7 @@ else
     % truncate descriptors
     desc1 = truncateDesc(desc1,maxnumofdesc);
     desc2 = truncateDesc(desc2,maxnumofdesc);
-    if isempty(desc1) | isempty(desc2)
+    if isempty(desc1) || isempty(desc2) ,
         rate_ = 0;
         X_ = [];
         Y_ = [];
@@ -106,15 +106,15 @@ else
         % idaj : 1=right(+x), 2=bottom(+y), 3=below(+z)
         % pixshift(iadj) = pixshift(iadj)+expensionshift(iadj); % initialize with a relative shift to improve CDP
         matchparams = modelParams(projectionThr,debug);
-        if length(iadj)~=1 | max(iadj)>3
+        if length(iadj)~=1 || max(iadj)>3
             error('not 6 direction neighbor')
         end
         %% MATCHING
-        [X_,Y_,rate_,pixshiftout,nonuniformity] = searchpair(desc1,desc2,pixshift,iadj,dims,matchparams);
+        [X_,Y_,rate_,~,nonuniformity] = searchpair(desc1,desc2,pixshift,iadj,dims,matchparams);
         if isempty(X_)
             matchparams_ = matchparams;
             matchparams_.opt.outliers = .5;
-            [X_,Y_,rate_,pixshiftout,nonuniformity] = searchpair_relaxed(desc1(:,1:3),desc2(:,1:3),pixshift,iadj,dims,matchparams_);
+            [X_,Y_,rate_,~,nonuniformity] = searchpair_relaxed(desc1(:,1:3),desc2(:,1:3),pixshift,iadj,dims,matchparams_);
         end
         
         if ~isempty(X_)
