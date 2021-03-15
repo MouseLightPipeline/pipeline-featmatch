@@ -13,7 +13,7 @@ function exitcode = pointmatch(tile1, tile2, acqusitionfolder1, acqusitionfolder
         exitcode = 0 ;
     end
     
-    % Eval args that are strings that we need to be numeric
+    % Eval args that are strings that (hopefully) represent numeric arrays
     if ischar(pixshift)
         pixshift = eval(pixshift);
     end
@@ -45,7 +45,7 @@ function exitcode = pointmatch(tile1, tile2, acqusitionfolder1, acqusitionfolder
     save(output_file_name,'paireddescriptor','scopefile1','scopefile2')
     system(sprintf('chmod g+rw %s',output_file_name));
     
-    % Write a thumbnail image file
+    % Synthesize and write a thumbnail image file
     X_ = paireddescriptor.X ;
     Y_ = paireddescriptor.Y ;
     % x:R, y:G, z:B
