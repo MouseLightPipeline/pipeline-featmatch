@@ -1,4 +1,6 @@
 function build()
+    % Function to build an executable version of the pointmatch() function using
+    % mcc.
     this_folder_path = fileparts(mfilename('fullpath')) ;
     pointmatch_script_path = fullfile(this_folder_path, 'pointmatch.m');    
     functions_folder_path = fullfile(this_folder_path, 'functions');    
