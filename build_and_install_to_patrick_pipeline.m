@@ -20,14 +20,20 @@ function build_and_install_to_patrick_pipeline()
     % Get the git report
     breadcrumb_string = get_git_report(source_repo_folder_path) ;   
     
-    % Install to both pipelines
+    % Delete pre-existing installs
     for a_or_b = 'ab' ,
-        % If the destination folder exists, error out
+        % If the destination folder exists, delete it
         install_folder_path = ...
             sprintf('/groups/mousebrainmicro/mousebrainmicro/pipeline-systems/pipeline-%s/apps/pipeline-featmatch-%s', a_or_b, short_commit_hash) ;
         if exist(install_folder_path, 'file') ,
-            error('Install folder %s already exists, please move or delete before installing new one') ;
+            system(sprintf('rm -rf %s', install_folder_path)) ;
         end
+    end
+        
+    % Install to both pipelines
+    for a_or_b = 'ab' ,        
+        install_folder_path = ...
+            sprintf('/groups/mousebrainmicro/mousebrainmicro/pipeline-systems/pipeline-%s/apps/pipeline-featmatch-%s', a_or_b, short_commit_hash) ;
         
         % Create the install folder, and any needed parent folders
         ensure_folder_exists(install_folder_path) ;
