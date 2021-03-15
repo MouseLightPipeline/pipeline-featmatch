@@ -1,10 +1,10 @@
-function exitcode = pointmatch(tile1, tile2, acqusitionfolder1, acqusitionfolder2, output_folder_name, pixshift, ch, maxnumofdesc, exitcode)
+function exitcode = pointmatch(tile1, tile2, acqusitionfolder1, acqusitionfolder2, output_folder_name, pixshift, ch, maxnumofdesc, exitcode)  %#ok<INUSL>
+    % Front-end function to do z point-matching in the Patrick pipeline.  In this
+    % version, the ch argument is vestigial---it is completely ignored
+    
     % Deal with arguments
     if ~exist('pixshift', 'var') || isempty(pixshift) ,
         pixshift = '[0 0 0]' ;
-    end
-    if ~exist('ch', 'var') || isempty(ch) ,
-        ch = '1' ;
     end
     if ~exist('maxnumofdesc', 'var') || isempty(maxnumofdesc) ,
         maxnumofdesc=1e3 ;
@@ -17,9 +17,6 @@ function exitcode = pointmatch(tile1, tile2, acqusitionfolder1, acqusitionfolder
     if ischar(pixshift)
         pixshift = eval(pixshift);
     end
-    if ischar(ch) ,
-        ch = eval(ch) ;
-    end
     if ischar(maxnumofdesc)
         maxnumofdesc=str2double(maxnumofdesc);
     end
@@ -30,29 +27,38 @@ function exitcode = pointmatch(tile1, tile2, acqusitionfolder1, acqusitionfolder
     % Read in stuff from input files
     scopefile1 = readScopeFile(acqusitionfolder1);
     scopefile2 = readScopeFile(acqusitionfolder2);
-    desc1 = readDesc(tile1, ch) ;
-    desc2 = readDesc(tile2, ch) ;
     
-    % Call the function that does the real work
-    [paireddescriptor, iadj] = pointmatch_core(desc1, desc2, scopefile1, scopefile2, pixshift, maxnumofdesc) ;
+    X_for_all_channels = zeros(0,3) ;
+    Y_for_all_channels = zeros(0,3) ;
+    for channel_index = 0:1 ,
+        desc1 = readDesc(tile1, channel_index) ;
+        desc2 = readDesc(tile2, channel_index) ;
 
-    % Write the main output file
-    tag = 'XYZ';
-    output_file_name = fullfile(output_folder_name,sprintf('match-%s.mat',tag(iadj))); % append 1 if match found
-    if exist(output_file_name,'file')
-        unix(sprintf('rm -f %s',output_file_name)) ;
+        % Call the function that does the real work
+        [paireddescriptor, iadj] = pointmatch_core(desc1, desc2, scopefile1, scopefile2, pixshift, maxnumofdesc) ;
+
+        % Write the main output file
+        tag = 'XYZ';
+        axis_letter = tag(iadj) ;
+        output_file_leaf_name = sprintf('channel-%d-match-%s.mat', channel_index, axis_letter) ;
+        output_file_name = fullfile(output_folder_name, output_file_leaf_name) ;
+        if exist(output_file_name,'file')
+            unix(sprintf('rm -f %s',output_file_name)) ;
+        end
+        save(output_file_name,'paireddescriptor','scopefile1','scopefile2')
+        system(sprintf('chmod g+rw %s',output_file_name));
+
+        % Save points for making the thumbnail
+        X_for_all_channels = vertcat(X_for_all_channels, paireddescriptor.X) ;  %#ok<AGROW>
+        Y_for_all_channels = vertcat(Y_for_all_channels, paireddescriptor.Y) ;  %#ok<AGROW>
     end
-    save(output_file_name,'paireddescriptor','scopefile1','scopefile2')
-    system(sprintf('chmod g+rw %s',output_file_name));
     
     % Synthesize and write a thumbnail image file
-    X_ = paireddescriptor.X ;
-    Y_ = paireddescriptor.Y ;
     % x:R, y:G, z:B
-    if isempty(X_) ,
+    if isempty(X_for_all_channels) ,
         col = [0 0 0] ;  % black as night
     else
-        col = median(Y_-X_,1)+128;
+        col = median(Y_for_all_channels-X_for_all_channels,1)+128;
     end    
     col = max(min(col,255),0);
     outpng = zeros(105,89,3);
